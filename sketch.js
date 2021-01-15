@@ -1,3 +1,4 @@
+// setting up variables for later use
 let color = "#3b444b";
 let pics = [];
 let screen_width = 1000;
@@ -16,6 +17,8 @@ let flag = true;
 let timer = [];
 let timette;
 let done;
+
+// p5.js set up function, this function runs once when the browser opens
 function setup() {
   createCanvas(slider.value, screen_height);
   for (let i = 0; i < parseInt(slider.value); i++) {
@@ -23,7 +26,7 @@ function setup() {
     states[i] = -1;
   }
 }
-
+// the draw function is a p5.js loop function that is constantly running
 async function draw() {
   background(color);
   for (let c = 0; c < pics.length; c++) {
@@ -38,25 +41,28 @@ async function draw() {
       stroke(255);
     }
   }
-
+//   if you want to run bubblesort
   if (bubble) {
     timette = new Date().getTime();
     currently_running = "bubblesort";
     bubblesort(pics);
     change();
     bubble = false;
+//   if you want to run quicksort
   } else if (sort) {
     timette = new Date().getTime();
     currently_running = "quicksort";
     quickSort(pics, 0, pics.length);
     change();
     sort = false;
+//   if you want to run selectionsort
   } else if (selection) {
     timette = new Date().getTime();
     currently_running = "selectionsort";
     selectionSort(pics);
     change();
     selection = false;
+// if you want to run insertion sort
   } else if (insertion) {
     currently_running = "insertionSort";
     change();
@@ -65,10 +71,13 @@ async function draw() {
 
     insertion = false;
   }
+//   constantly updating swaps, steps, size, speed
   swaps.textContent = swapped;
   steps.textContent = stepped;
   size.textContent = pics.length;
   speed.textContent = speedtime.value;
+  
+//   adds working timer
   if (done) {
     time.textContent = done - timette;
   } else if (timette) {
@@ -78,6 +87,7 @@ async function draw() {
   }
 }
 
+// swap function that swaps 2 parts of a list, mutates the list and thus does not need to return a new list
 async function swap(lst, first, second) {
   await sleep(101 - speedtime.value);
   let temp_var = lst[first];
@@ -86,7 +96,7 @@ async function swap(lst, first, second) {
   swapped++;
   stepped++;
 }
-
+// event listener for the reset button to reset the sketch
 resetBtn.addEventListener("click", async function () {
   currently_running = "reset";
   change();
@@ -94,7 +104,7 @@ resetBtn.addEventListener("click", async function () {
   stepped = 0;
   swapped = 0;
 });
-
+// sets everything back to normal
 async function reset() {
   pics = [];
   for (let i = 0; i < slider.value; i++) {
@@ -115,7 +125,7 @@ async function reset() {
   timette = 0;
   done = null;
 }
-
+// event listeners for the different sorts
 BubbleSort.addEventListener("click", function () {
   bubble = true;
 });
@@ -128,15 +138,16 @@ SelectionSort.addEventListener("click", function () {
 InsertionSort.addEventListener("click", function () {
   insertion = true;
 });
+// ability to change size of array using this 
 slider.oninput = async function () {
   reset();
   resizeCanvas(slider.value, screen_height);
 };
-
+// sleep function, really important for visualizing 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
+// for setting pop up text explaining each algorithm
 async function change() {
   btns.forEach(function (event) {
     if (event.classList.contains(currently_running)) {
